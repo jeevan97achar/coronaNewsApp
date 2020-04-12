@@ -1,26 +1,53 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import NavbarComponent from './components/navbar';
+import { BrowserRouter } from 'react-router-dom';
+import FooterComponent from './components/footer';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      news: []
+    }
+  }
+  componentDidMount() {
+    fetch('https://cryptic-ravine-96718.herokuapp.com/')
+  .then((response) => {
+    return response.json();
+  })
+  .then((myJson) => {
+    this.setState({
+      news: myJson.news
+    })
+  });
+  }
+  render() {
+    console.log(this.state)
+    return (
+      <BrowserRouter>
+        <div>
+          <NavbarComponent />
+          <div>
+          {this.state.news.map((item, index) => {
+            return (
+              <div className="container">
+              <div className="card z-depth-0 post-summary">
+              <div className="card-content grey-text text-darken-3">
+                <span className="card-title">{item.title}</span>
+                <div className="card-action">
+                  <a href={item.link} rel="noopener noreferrer" target="_blank">Read More</a>
+                </div>
+              </div>
+              </div>
+              </div>
+            )
+          })}
+          </div>
+          <FooterComponent />
+        </div>
+      </BrowserRouter>
+    )
+  }
 }
 
 export default App;
